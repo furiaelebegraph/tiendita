@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\ShoppingCart;
+use App\Http\Resources\ProductsCollection;
 
 class ProductsController extends Controller
 {
@@ -19,12 +21,14 @@ class ProductsController extends Controller
 
 
     public function index(Request $request){
+
         $productos = Product::paginate(15);
         if($request->wantsJson()){
-            return $productos->toJson();
+            /*return $productos->toJson();*/
+            return new ProductsCollection($productos);
         }
 
-        return view('products.index');
+        return view('products.index', compact('productos'));
     }
 
     /**
@@ -58,7 +62,7 @@ class ProductsController extends Controller
         if($request->hasFile('caratula')){
             $nombreImagen = preg_replace('/\s/', '', $request->caratula->getClientOriginalName());
             $nombreImagen = time().'-'.$nombreImagen;
-            $request->caratula->move("/img/producto/",$nombreImagen );
+            $path = $request->caratula->storeAs("/img/producto",$nombreImagen );
             $nombreImagen = 'producto/'.$nombreImagen;
             $product->caratula = $nombreImagen;
 
@@ -85,7 +89,8 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id){
-        return view('products.show');
+        $producto = Product::findOrFail($id);
+        return view('products.show', compact('producto'));
     }
 
     /**
@@ -95,7 +100,7 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id){
-        $productos = Products::findOrFail($id);
+        $productos = Product::findOrFail($id);
         return view('products.edit', compact('productos'));
         //
     }
@@ -108,7 +113,7 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        $productos = Products::findOrFail($id);
+        $productos = Product::findOrFail($id);
         return view('products')->with('mensaje', 'Se ha actualizado el producto');
     }
 

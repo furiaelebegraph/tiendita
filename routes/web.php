@@ -19,6 +19,11 @@ Route::group(['prefix' => 'admin'], function(){
 	Auth::routes();
 });
 
+
+Route::get('carrito', 'CarritoController@show')->name('carrito.show');
+
+Route::resource('in_shopping_cart', 'ProductsInShopipngCartsController')->only(['store', 'destroy']);
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('producto', 'ProductsController');

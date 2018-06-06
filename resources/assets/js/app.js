@@ -6,6 +6,22 @@
  */
 
 require('./bootstrap');
+import 'vue-use-vuex';
+const Vuex = require('vuex');
+
+window.store = new Vuex.Store({
+	state:{
+		productsCount: 0
+	},
+	mutations:{
+		increment(state){
+			return state.productsCount++
+		},
+		set(state, value){
+			return state.productsCount = value
+		}
+	}
+})
 
 window.Vue = require('vue');
 
@@ -18,7 +34,8 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('products-component', require('./components/products/ProductsComponent.vue'));
 Vue.component('product-card-component', require('./components/products/ProductCardComponent.vue'));
-
+Vue.component('add-to-cart', require('./components/products/AddToCartComponent.vue'));
+Vue.component('producto-computado', require('./components/shoping_cart/ContadorComponent.vue'));
 const app = new Vue({
     el: '#app'
 });
